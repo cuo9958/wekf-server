@@ -29,6 +29,7 @@
         "koa-router": "8.0.8",
         "mongodb": "3.5.5",
         "mysql2": "2.1.0",
+        "njwt": "^1.1.0",
         "sequelize": "5.21.6",
         "socket.io": "^4.1.2"
     },

@@ -7,17 +7,18 @@ const Clients = new Map();
 
 //链接socket，自动进入房间
 export function UserJoin(id: string, client: Socket.Socket) {
-    client.join("room_id");
+    // client.join("room_id");
     Clients.set(id, client);
 }
 //离开
 export function UserLeave(id: string) {}
 //发消息
-export function UserTalk(id: string, msg: string) {
+export function UserTalk(id: string, msg: any) {
     console.log("说", msg);
     const client = Clients.get(id);
     if (!id) return;
-    client.emit("join", "小姐姐进入");
+    client.emit("join", "小姐姐");
+    client.emit("talk", { id: 1, type: "text", data: "回复消息内容" + msg.data });
 }
 
 //1. 用户连入系统
@@ -26,3 +27,4 @@ export function UserTalk(id: string, msg: string) {
 //4. 交互
 //5. 用户离开
 //6. 客服进入、换客服
+//7. 工作时间
