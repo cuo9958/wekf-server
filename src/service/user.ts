@@ -1,4 +1,5 @@
 import NJwt from "njwt";
+import UserModel from "../model/user";
 
 const jwt_key = "123";
 
@@ -11,4 +12,20 @@ export function ParseJwtToken(token: string) {
     const data = NJwt.verify(token, jwt_key);
     if (!data) return null;
     return data.body;
+}
+
+export async function GetUserList(pageindex = 0) {
+    const data = await UserModel.getlist(pageindex);
+    return data;
+}
+
+export async function DelUser(id: number) {
+    return UserModel.del(id);
+}
+export async function EditUser(model: any, id = 0) {
+    if (!id) {
+        await UserModel.insert(model);
+    } else {
+        await UserModel.update(model, id);
+    }
 }
