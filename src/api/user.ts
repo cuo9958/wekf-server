@@ -1,6 +1,6 @@
 import Router from "koa-router";
 import { BeError, BeSuccess } from "../util/response";
-import { GetUserList, DelUser, EditUser } from "../service/user";
+import { GetUserList, DelUsers, EditUser } from "../service/user";
 
 const router = new Router();
 
@@ -27,9 +27,15 @@ router.post("/edit", async function (ctx) {
 });
 
 router.post("/del", async function (ctx) {
-    const { id } = ctx.request.body;
+    const { ids } = ctx.request.body;
+    let idlist: any[] = [];
+    if (typeof ids === "number") {
+        idlist.push(ids);
+    } else {
+        idlist = ids.split(",").map((item) => parseInt(item));
+    }
     try {
-        const data = await DelUser(id * 1);
+        const data = await DelUsers(idlist);
         ctx.body = BeSuccess(data);
     } catch (error) {
         console.log(error);

@@ -22,6 +22,9 @@ export async function GetUserList(pageindex = 0) {
 export async function DelUser(id: number) {
     return UserModel.del(id);
 }
+export async function DelUsers(ids: number[]) {
+    return UserModel.del(ids);
+}
 export async function EditUser(model: any, id = 0) {
     if (!id) {
         await UserModel.insert(model);

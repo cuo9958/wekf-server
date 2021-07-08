@@ -62,7 +62,7 @@ export default {
             },
         });
     },
-    del: function (id: number) {
+    del: function (id: number | number[]) {
         return User.destroy({
             where: {
                 id,
