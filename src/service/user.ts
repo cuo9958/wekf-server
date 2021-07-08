@@ -14,6 +14,28 @@ export function ParseJwtToken(token: string) {
     return data.body;
 }
 
+export async function Login(user_name, pwd) {
+    //用户名密码
+    const model = await UserModel.getBypwd(user_name, pwd);
+    if (!model) throw new Error("用户密码错误");
+    //生成token
+    const data = {
+        nickname: model.nickname,
+        user_name: model.user_name,
+        headimg: model.headimg,
+        role: model.role,
+        updatedAt: model.updatedAt,
+    };
+    const token = CreateJwtToken(data);
+    return {
+        user_name,
+        token,
+        nickname: model.nickname,
+        headimg: model.headimg,
+        role: model.role,
+    };
+}
+
 export async function GetUserList(pageindex = 0) {
     const data = await UserModel.getlist(pageindex);
     return data;

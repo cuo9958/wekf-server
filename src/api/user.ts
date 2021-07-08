@@ -1,6 +1,6 @@
 import Router from "koa-router";
 import { BeError, BeSuccess } from "../util/response";
-import { GetUserList, DelUsers, EditUser } from "../service/user";
+import { GetUserList, DelUsers, EditUser, Login, ParseJwtToken } from "../service/user";
 
 const router = new Router();
 
@@ -36,6 +36,26 @@ router.post("/del", async function (ctx) {
     }
     try {
         const data = await DelUsers(idlist);
+        ctx.body = BeSuccess(data);
+    } catch (error) {
+        console.log(error);
+        ctx.body = BeError(error.message);
+    }
+});
+
+router.post("/login", async function (ctx) {
+    const { username, password } = ctx.request.body;
+    try {
+        const data = await Login(username, password);
+        ctx.body = BeSuccess(data);
+    } catch (error) {
+        console.log(error);
+        ctx.body = BeError(error.message);
+    }
+});
+router.get("/userInfo", async function (ctx) {
+    try {
+        const data = await ParseJwtToken(ctx.headers.token);
         ctx.body = BeSuccess(data);
     } catch (error) {
         console.log(error);

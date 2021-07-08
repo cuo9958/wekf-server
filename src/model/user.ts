@@ -72,6 +72,17 @@ export default {
     update(data: any, id) {
         return User.update(data, { where: { id } });
     },
+    getBypwd(user_name: string, pwd: string) {
+        return User.findOne({
+            where: { user_name, pwd },
+            attributes: ["id", "nickname", "user_name", "role", "headimg", "updatedAt"],
+        });
+    },
+    check(user_name: string, pwd: string) {
+        return User.count({
+            where: { user_name, pwd },
+        });
+    },
     getlist(PageIndex: number, PageSize = 20) {
         let where = {};
         return User.findAndCountAll({
