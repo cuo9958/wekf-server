@@ -1,10 +1,11 @@
 import Router from "koa-router";
 import { BeError, BeSuccess } from "../util/response";
 import { GetUserList, DelUsers, EditUser, Login, ParseJwtToken } from "../service/user";
+import AuthMiddle from "../middleware/auth";
 
 const router = new Router();
 
-router.get("/", async function (ctx) {
+router.get("/", AuthMiddle, async function (ctx) {
     const { pageindex } = ctx.query;
     try {
         const data = await GetUserList(pageindex);
@@ -14,7 +15,7 @@ router.get("/", async function (ctx) {
         ctx.body = BeError(error.message);
     }
 });
-router.post("/edit", async function (ctx) {
+router.post("/edit", AuthMiddle, async function (ctx) {
     const { id, nickname, user_name, pwd, headimg, role } = ctx.request.body;
     try {
         const model = { nickname, user_name, pwd, headimg, role };
@@ -26,7 +27,7 @@ router.post("/edit", async function (ctx) {
     }
 });
 
-router.post("/del", async function (ctx) {
+router.post("/del", AuthMiddle, async function (ctx) {
     const { ids } = ctx.request.body;
     let idlist: any[] = [];
     if (typeof ids === "number") {
@@ -53,7 +54,7 @@ router.post("/login", async function (ctx) {
         ctx.body = BeError(error.message);
     }
 });
-router.get("/userInfo", async function (ctx) {
+router.get("/userInfo", AuthMiddle, async function (ctx) {
     try {
         const data = await ParseJwtToken(ctx.headers.token);
         ctx.body = BeSuccess(data);
