@@ -2,19 +2,12 @@ import Koa from "koa";
 import KoaBody from "koa-body";
 import routers from "./router";
 import http from "http";
-import Socket from "socket.io";
-import { UserJoin, UserLeave, UserTalk } from "./service/img";
+import KFService from "./service/kf";
 
 const app = new Koa();
 const server = http.createServer(app.callback());
-const SocketIO = new Socket.Server(server, {
-    path: "/_img",
-    connectTimeout: 60000,
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-    },
-});
+
+KFService(server);
 
 app.use(
     KoaBody({
@@ -24,24 +17,6 @@ app.use(
 
 //加载路由
 app.use(routers.routes()).use(routers.allowedMethods());
-
-//加载websocket
-SocketIO.on("connection", (client: Socket.Socket) => {
-    console.log("进入", client.handshake.query);
-    UserJoin(client.id, client);
-
-    client.on("talk", (data) => {
-        console.log("talk事件", data);
-        UserTalk(client.id, data);
-    });
-    client.on("message", (data) => {
-        console.log("message事件", data);
-    });
-    client.on("disconnect", (msg) => {
-        console.log("用户退出", msg);
-        UserLeave(client.id);
-    });
-});
 
 const port = process.env.PORT || "8082";
 
